@@ -89,7 +89,7 @@ def straightLine_pid_imu():
 def moveForward:
 	err_y, correction_y, err_a, correction_a = straightLine_pid_imu()
 	
-def accy_callbackmsg):
+def accy_callback(msg):
 	global acc_y
 	acc_y = msg.data
 
