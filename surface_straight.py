@@ -27,6 +27,13 @@ def straightLine_pid_imu():
 	
 	correction_y = KP_y*abs(err_y) + KD_y*diff_err_y
 	correction_y = (int_err_y*err_y > 0) ? correction_y + KI_y*int_err_y : correction_y - KI_y*int_err_y 
+		
+	err_a = acceleration_ydirn
+	diff_err_a = err_a - prev_err_a
+	int_err_a += err_a 
+	
+	correction_a += KP_a*abs(err_a) + KD_a*diff_err_a
+	correction_a = (int_err_a*err_a > 0) ? correction_a + KI_a*int_err_a : correction_a -KI_a*int_err_a
 
 	if(err_y > err_y_thresh):
 		pwm_fr += correction_y #front right should rotate in a way such that one component of it's force is towards left
