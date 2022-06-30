@@ -81,8 +81,10 @@ def straightLine_pid_imu():
 			pwm_br = max(pwm_br, MINpwm_br)
 
 			pwm_fr, pwm_bl = 1500,1500
-
-return err_y, correction_y, err_a, correction_a
+			
+	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '; 
+	pub.Publish(pwm_msg);
+	return err_y, correction_y, err_a, correction_a
 
 def moveForward:
 	err_y, correction_y, err_a, correction_a = straightLine_pid_imu()
