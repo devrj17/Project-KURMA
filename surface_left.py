@@ -42,11 +42,11 @@ def goToangle(desired_angle):
 
 	if(err_y > err_y_thresh):
 		pwm_fr += correction_y
-    pwm_br += correction_y
+    		pwm_br += correction_y
 		pwm_fr = min(pwm_fr, MAXpwm_fr)
 		pwm_fr = max(pwm_fr, MINpwm_fr)
 		pwm_br = min(pwm_bl, MAXpwm_bl)
-		pwm_bl = max(pwm_bl, MINpwm_bl)
+		pwm_br = max(pwm_bl, MINpwm_bl)
 	
 	elif(err_y < -err_y_thresh):
 		pwm_fr -= correction_y
@@ -58,15 +58,13 @@ def goToangle(desired_angle):
 	
 	elif(abs(err_a) > err_a_thresh):
 		if(err_a>0):
-			pwm_fr += correction_a
-			pwm_bl += correction_a
+			pwm_fr -= correction_a
+			pwm_bl -= correction_a
 
 			pwm_fr = min(pwm_fr, MAXpwm_fr)
 			pwm_fr = max(pwm_fr, MINpwm_fr)
 			pwm_bl = min(pwm_bl, MAXpwm_bl)
 			pwm_bl = max(pwm_bl, MINpwm_bl)
-			
-			pwm_fl, pwm_br = 1500,1500
 		else:
 			pwm_fl += correction_a
 			pwm_br += correction_a
@@ -74,15 +72,10 @@ def goToangle(desired_angle):
 			pwm_fl = max(pwm_fl, MINpwm_fl) 
 			pwm_br = min(pwm_br, MAXpwm_br)
 			pwm_br = max(pwm_br, MINpwm_br)
-
-			pwm_fr, pwm_bl = 1500,1500
 			
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '; 
 	pub.Publish(pwm_msg);
 	return err_y, correction_y, err_a, correction_a
-
-def moveForward:
-	err_y, correction_y, err_a, correction_a = straightLine_pid_imu()
 
 def accx_callback(msg):
 	global acc_x
