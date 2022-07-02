@@ -18,7 +18,7 @@ err_a_thresh = 0
 turning _factor = 0
 MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 1900, 1900, 1900, 1900, 1900, 1900
 MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = 1100, 1100, 1100, 1100, 1100, 1100
-pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1500, 1500, 1500, 1500, 1500, 1500 
+pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1600, 1600, 1600, 1600, 1500, 1500 
 
 #err_y is positive => robot is turned towards right, when we are looking from back
 
@@ -48,8 +48,6 @@ def straightLine_pid_imu():
 		pwm_fr = max(pwm_fr, MINpwm_fr)
 		pwm_bl = min(pwm_bl, MAXpwm_bl)
 		pwm_bl = max(pwm_bl, MINpwm_bl)
-
-		pwm_fl, pwm_br = 1500,1500
 	
 	elif(err_y < -err_y_thresh):
 		pwm_fl += correction_y
@@ -58,8 +56,6 @@ def straightLine_pid_imu():
 		pwm_fl = max(pwm_fl, MINpwm_fl)
 		pwm_br = min(pwm_br, MAXpwm_br)
 		pwm_br = max(pwm_br, MINpwm_br)
-
-		pwm_fr, pwm_bl = 1500,1500
 	
 	elif(abs(err_a) > err_a_thresh):
 		if(err_a>0):
@@ -70,8 +66,6 @@ def straightLine_pid_imu():
 			pwm_fr = max(pwm_fr, MINpwm_fr)
 			pwm_bl = min(pwm_bl, MAXpwm_bl)
 			pwm_bl = max(pwm_bl, MINpwm_bl)
-			
-			pwm_fl, pwm_br = 1500,1500
 		else:
 			pwm_fl += correction_a
 			pwm_br += correction_a
@@ -79,8 +73,6 @@ def straightLine_pid_imu():
 			pwm_fl = max(pwm_fl, MINpwm_fl) 
 			pwm_br = min(pwm_br, MAXpwm_br)
 			pwm_br = max(pwm_br, MINpwm_br)
-
-			pwm_fr, pwm_bl = 1500,1500
 			
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '; 
 	pub.Publish(pwm_msg);
