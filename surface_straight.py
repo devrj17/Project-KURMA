@@ -122,4 +122,3 @@ if __name__ == "__main__":
     pub=rospy.Publisher("PWM_VALUE",String ,queue_size=q)
    
     rospy.spin()
-
