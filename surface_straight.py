@@ -76,10 +76,10 @@ def straightLine_pid_imu():
 			
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '; 
 	pub.Publish(pwm_msg);
-	return err_y, correction_y, err_a, correction_a
+# 	return err_y, correction_y, err_a, correction_a
 
-def moveForward:
-	err_y, correction_y, err_a, correction_a = straightLine_pid_imu()
+# def moveForward:
+# 	err_y, correction_y, err_a, correction_a = straightLine_pid_imu()
 	
 def accy_callback(msg):
 	global acc_y
