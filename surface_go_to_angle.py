@@ -104,7 +104,7 @@ def yaw_callback(msg):
 
 if __name__ == "__main__":
 	
-    rospy.init_node("surf_straight_pid", anonymous = False)
+    rospy.init_node("surf_goToangel_pid", anonymous = False)
     q = 1
     
     sub_yaw = rospy.Subscriber("angle_z", Float64, yaw_callback)
