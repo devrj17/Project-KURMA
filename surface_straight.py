@@ -15,7 +15,7 @@ KP_y, KD_y, KI_y = 0,0,0
 KP_a, KD_a, KI_a = 0,0,0
 err_y_thresh = 10 #degrees
 err_a_thresh = 0
-turning _factor = 0
+turning_factor = 0
 MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 1900, 1900, 1900, 1900, 1900, 1900
 MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = 1100, 1100, 1100, 1100, 1100, 1100
 pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1600, 1600, 1600, 1600, 1500, 1500 
@@ -31,14 +31,20 @@ def straightLine_pid_imu():
 	int_err_y += err_y 
 	
 	correction_y = KP_y*abs(err_y) + KD_y*diff_err_y
-	correction_y = (int_err_y*err_y > 0) ? correction_y + KI_y*int_err_y : correction_y - KI_y*int_err_y 
+	if(int_err_y*err_y > 0) :
+		correction_y = correction_y + KI_y*int_err_y 
+	else:
+	 	correction_y =correction_y - KI_y*int_err_y 
 		
 	err_a = acc_y
 	diff_err_a = err_a - prev_err_a
 	int_err_a += err_a 
 	
-	correction_a += KP_a*abs(err_a) + KD_a*diff_err_a
-	correction_a = (int_err_a*err_a > 0) ? correction_a + KI_a*int_err_a : correction_a -KI_a*int_err_a
+	correction_a = KP_a*abs(err_a) + KD_a*diff_err_a
+	if(int_err_a*err_a > 0) :
+		correction_a = correction_a + KI_a*int_err_a 
+	else:
+	 	correction_a =correction_a - KI_a*int_err_a 
 
 	if(err_y > err_y_thresh):
 		pwm_fr += correction_y #front right should rotate in a way such that one component of it's force is towards left
@@ -74,8 +80,11 @@ def straightLine_pid_imu():
 			pwm_br = min(pwm_br, MAXpwm_br)
 			pwm_br = max(pwm_br, MINpwm_br)
 			
-	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '; 
-	pub.Publish(pwm_msg);
+	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '
+	pub.publish(pwm_msg)
+	rospy.loginfo(yaw)
+	rospy.loginfo(pwm_msg)
+
 # 	return err_y, correction_y, err_a, correction_a
 
 # def moveForward:
@@ -84,6 +93,11 @@ def straightLine_pid_imu():
 def accy_callback(msg):
 	global acc_y
 	acc_y = msg.data
+
+def accx_callback(msg):
+	global acc_x
+	acc_x = msg.data
+
 
 def yaw_callback(msg):
 	global yaw
@@ -95,11 +109,11 @@ if __name__ == "__main__":
     rospy.init_node("surf_straight_pid", anonymous = False)
     q = 1
     
-    sub_yaw = rospy.Subscriber("angle_z", Float64, yaw_callback)
-    sub_accx = rospy.Subscriber("accx", Float64, accx_callback)
-    sub_accy = rospy.Subscriber("accy", Float64, accy_callback)
+    rospy.Subscriber("angle_z", Float64, yaw_callback)
+    rospy.Subscriber("accx", Float64, accx_callback)
+    rospy.Subscriber("accy", Float64, accy_callback)
 	
     pub=rospy.Publisher("PWM_VALUE",String ,queue_size=q)
    
     rospy.spin()
-  
+
