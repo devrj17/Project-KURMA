@@ -71,7 +71,7 @@ def straightLine_pid_imu():
 # 		pwm_br = max(pwm_br, MINpwm_br) # if we are using 100 as base then this is wrong
 	
 	elif(abs(err_a) > err_a_thresh):  #what if, auv is facing straight but moving left or right or diagnonally. 
-		if(err_a>0):
+		if(err_a>0): # auv is moving towards right
 			pwm_fr += correction_a # increase the force of front right and back left
 			pwm_bl -= correction_a # and yes here we need to change both or all 4, so that no turning force is created
 			pwm_fr = min(pwm_fr, MAXpwm_fr)
