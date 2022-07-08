@@ -1,8 +1,9 @@
 #! /usr/bin/env python
 from numpy import float32
 import rospy
-#from dynamic_reconfigure.server import Server
+from dynamic_reconfigure.server import Server
 #from auv_codes2.cfg import thrusterConfig
+from auv_codes2.cfg import PID_yawConfig
 from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Int32
 from std_msgs.msg import Float64
@@ -15,8 +16,8 @@ from std_msgs.msg import String
 yaw = 0
 acc_y = 0
 prev_err_y, int_err_y, prev_err_a, int_err_a = 0,0,0,0
-KP_y, KD_y, KI_y = 0,0,0
-KP_a, KD_a, KI_a = 0,0,0
+KP_y, KD_y, KI_y = 1,1,1
+KP_a, KD_a, KI_a = 1,1,1
 err_y_thresh = 10 #degrees
 err_a_thresh = 0
 turning_factor = 0
@@ -104,11 +105,17 @@ def accx_callback(msg):
 	global acc_x
 	acc_x = msg.data
 
-
 def yaw_callback(msg):
 	global yaw
 	yaw = msg.data
 	straightLine_pid_imu()
+	
+def callback_gui(config, level):
+    rospy.loginfo("""Reconfigure Request: {KP_yaw}, {KI_yaw}, {KD_yaw}""".format(**config))
+
+    KP_y, KI_y, KD_y = config.KP_yaw, config.KI_yaw, config.KD_yaw 
+
+    return config
 
 if __name__ == "__main__":
 	
@@ -120,5 +127,6 @@ if __name__ == "__main__":
     rospy.Subscriber("accy", Float64, accy_callback)
 	
     pub=rospy.Publisher("PWM_VALUE",String ,queue_size=q)
+	srv = Server(PID_yawConfig, callback_gui)
    
     rospy.spin()
