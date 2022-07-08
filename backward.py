@@ -10,8 +10,8 @@ from std_msgs.msg import String
 
 
 # 	  	            FL BL  FR BR
-# straight forward  CW CCW CW CCW
-# straight backward CCW CW CCW CW
+# straight forward  	    CW CCW CW CCW
+# straight backward 	    CCW CW CCW CW
 yaw = 0
 acc_y = 0
 prev_err_y, int_err_y, prev_err_a, int_err_a = 0,0,0,0
@@ -20,10 +20,10 @@ KP_a, KD_a, KI_a = 0,0,0
 err_y_thresh = 10 #degrees
 err_a_thresh = 0
 turning_factor = 0
-MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 1900, 1900, 1900, 1900, 1900, 1900
+MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 1900, 1900, 1900, 1900, 1900, 1900  # This could be done by a single variable
 MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = 1100, 1100, 1100, 1100, 1100, 1100
 # pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1600, 1400, 1600, 1400, 1500, 1500 # ========== base velocities
-pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, -100, 100, -100, 0 , 0  # ================== 100 basically represent base velocities
+pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = -100, 100, -100, 100, 0 , 0  # ================== 100 basically represent base velocities
 
 # x-axis ^ 
 # y-axis >
@@ -55,36 +55,36 @@ def straightLine_pid_imu():
 	 	correction_a =correction_a - KI_a*int_err_a 
 
 	if(err_y > err_y_thresh):
-		pwm_fr += correction_y # increasing the force of front right
-# 		pwm_bl += correction_y # decreasing the force of back left, indeed we could change any of the 4ci, so for the simplicity lets change only one
-		pwm_fr = min(pwm_fr, 0)
-		pwm_fr = max(pwm_fr, MINpwm_fr) 
-# 		pwm_bl = min(pwm_bl, 0)
-# 		pwm_bl = max(pwm_bl, MINpwm_bl)
+# 		pwm_fr += correction_y # decreasing the force of front right
+		pwm_bl += correction_y # increasing the force of back left, indeed we could change any of the 4ci, so for the simplicity lets change only one
+# 		pwm_fr = min(pwm_fr, 0)
+# 		pwm_fr = max(pwm_fr, MINpwm_fr) # if we are using 100 as base then this is wrong 
+		pwm_bl = min(pwm_bl, MAXpwm_bl)
+# 		pwm_bl = max(pwm_bl, 100)
 	
 	elif(err_y < -err_y_thresh):
-		pwm_fl += correction_y
-# 		pwm_br += correction_y
-		pwm_fl = min(pwm_fl, 0)
-		pwm_fl = max(pwm_fl, MINpwm_fl)
-# 		pwm_br = min(pwm_br, 0)
-# 		pwm_br = max(pwm_br, MINpwm_br)
+# 		pwm_fl += correction_y
+		pwm_br += correction_y
+# 		pwm_fl = min(pwm_fl, 0)
+# 		pwm_fl = max(pwm_fl, MINpwm_fl)
+		pwm_br = min(pwm_br, MAXpwm_br)
+# 		pwm_br = max(pwm_br, 100)
 	
 	elif(abs(err_a) > err_a_thresh):  #what if, auv is facing straight but moving left or right or diagnonally. 
-		if(err_a>0):
-			pwm_fr += correction_a # increase the force of front right and back left
-			pwm_bl -= correction_a # and yes here we need to change both or all 4, so that no turning force is created
-			pwm_fr = min(pwm_fr, 0)
-			pwm_fr = max(pwm_fr, MINpwm_fr)
-			pwm_bl = min(pwm_bl, MAXpwm_bl)
-			pwm_bl = max(pwm_bl, 100)
+		if(err_a>0): # auv is going right
+			pwm_fl -= correction_a # increase the force of front left and back right
+			pwm_br += correction_a # and yes here we need to change both or all 4, so that no turning force is created
+# 			pwm_fl = min(pwm_fl, -100)
+			pwm_fl = max(pwm_fl, MINpwm_fr)
+			pwm_br = min(pwm_bl, MAXpwm_bl)
+# 			pwm_br = max(pwm_bl, 100)
 		else:
-			pwm_fl += correction_a
-			pwm_br -= correction_a
-			pwm_fl = min(pwm_fl, 0)
-			pwm_fl = max(pwm_fl, MINpwm_fl) 
-			pwm_br = min(pwm_br, MAXpwm_br)
-			pwm_br = max(pwm_br, 100)
+			pwm_fr -= correction_a
+			pwm_bl += correction_a
+# 			pwm_fr = min(pwm_fl, 0)
+			pwm_fr = max(pwm_fl, MINpwm_fl) 
+			pwm_bl = min(pwm_br, MAXpwm_br)
+# 			pwm_bl = max(pwm_br, 100)
 			
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '
 	pub.publish(pwm_msg)
