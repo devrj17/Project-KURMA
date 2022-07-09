@@ -10,8 +10,11 @@ from std_msgs.msg import Float64
 from std_msgs.msg import String
 
 
-# 	  	   FL BL  FR BR
-# straight CW CCW CW CCW
+#    FL BL FR BR ML MR
+# F  C  A  C  A 
+# B  A  C  A  C
+# L  A  A  C  C
+# R  C  C  A  A
 
 yaw = 0
 acc_y = 0
@@ -21,10 +24,12 @@ KP_a, KD_a, KI_a = 1,1,1
 err_y_thresh = 10 #degrees
 err_a_thresh = 0
 turning_factor = 0
-MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 1900, 1900, 1900, 1900, 1900, 1900 # This could be done by a single variable
-MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = 1100, 1100, 1100, 1100, 1100, 1100
-# pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1600, 1400, 1600, 1400, 1500, 1500 # ========== base velocities
-pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, -100, 100, -100, 0 , 0  # ================== 100 basically represent base velocities
+MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 400, 400, 400, 400, 400, 400 # This could be done by a single variable
+MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = -400, -400, -400, -400, -400, -400
+# MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 1900, 1900, 1900, 1900, 1900, 1900 # This could be done by a single variable
+# MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = 1100, 1100, 1100, 1100, 1100, 1100
+# # pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1600, 1400, 1600, 1400, 1500, 1500 # ========== base velocities
+# pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, -100, 100, -100, 0 , 0  # ================== 100 basically represent base velocities
 
 # x-axis ^ 
 # y-axis >
