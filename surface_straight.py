@@ -44,6 +44,7 @@ def straightLine_pid_imu():
 		correction_y = correction_y + KI_y*int_err_y 
 	else:
 	 	correction_y =correction_y - KI_y*int_err_y 
+	correction_y = max(correction_y,0)
 		
 	err_a = acc_y
 	diff_err_a = err_a - prev_err_a
@@ -54,6 +55,7 @@ def straightLine_pid_imu():
 		correction_a = correction_a + KI_a*int_err_a 
 	else:
 	 	correction_a =correction_a - KI_a*int_err_a 
+	correction_a = max(correction_a,0)
 
 	if(err_y > err_y_thresh):
 		pwm_fr += correction_y # increasing the force of front right
