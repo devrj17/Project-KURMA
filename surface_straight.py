@@ -15,6 +15,8 @@ from std_msgs.msg import String
 # B  A  C  A  C
 # L  A  A  C  C
 # R  C  C  A  A
+# D  -  -  -  -  C  C
+# U  -  -  -  -  A  A
 
 yaw = 0
 acc_y = 0
@@ -94,6 +96,8 @@ def straightLine_pid_imu():
 # 			pwm_fl = max(pwm_fl, 100) 
 # 			pwm_br = min(pwm_br, 0)
 			pwm_br = max(pwm_br, MINpwm_br) # if we are using 100 as base then this is wrong
+	
+	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = int(pwm_fr), int(pwm_br), int(pwm_fl), int(pwm_bl), int(pwm_mr), int(pwm_ml),
 			
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '
 	pub.publish(pwm_msg)
@@ -121,9 +125,7 @@ def yaw_callback(msg):
 def callback_gui(config, level):
     rospy.loginfo("""Reconfigure Request: {KP_yaw}, {KI_yaw}, {KD_yaw}""".format(**config))
     global KP_y, KI_y, KD_y
-
-    KP_y, KI_y, KD_y = config.KP_yaw, config.KI_yaw, config.KD_yaw 
-
+    KP_y, KI_y, KD_y = config.KP_yaw / 1000, config.KI_yaw / 1000, config.KD_yaw / 1000 
     return config
 
 if __name__ == "__main__":
