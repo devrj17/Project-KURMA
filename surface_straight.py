@@ -11,10 +11,10 @@ from std_msgs.msg import String
 
 
 #    FL BL FR BR ML MR
-# F  C  A  C  A 
-# B  A  C  A  C
-# L  A  A  C  C
-# R  C  C  A  A
+# F  C  C  C  C 
+# B  A  A  A  A
+# L  A  C  C  A
+# R  C  A  A  C
 # D  -  -  -  -  C  C
 # U  -  -  -  -  A  A
 
