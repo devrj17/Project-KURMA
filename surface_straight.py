@@ -33,7 +33,8 @@ pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, -100, 100, -100, 0 , 0  # 
 
 def straightLine_pid_imu():
 	global prev_err_y, int_err_y, prev_err_a, int_err_a
-	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
+# 	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
+	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, -100, 100, -100, 0 , 0  # ================== 100 basically represent base velocities
 
 	err_y = yaw
 	diff_err_y = err_y - prev_err_y
