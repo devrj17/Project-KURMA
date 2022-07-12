@@ -74,7 +74,7 @@ def straightLine_pid_imu():
 
 	if(err_y > err_y_thresh):
 		pwm_fr += correction_y # increasing the force of front right
-# 		pwm_bl += correction_y # decreasing the force of back left, indeed we could change any of the 4ci, so for the simplicity lets change only one
+# 		pwm_bl -= correction_y # decreasing the force of back left, indeed we could change any of the 4ci, so for the simplicity lets change only one
 		pwm_fr = min(pwm_fr, MAXpwm_fr)
 # 		pwm_fr = max(pwm_fr, 100) # I think this is incorrect, as we are only increasing the forces never decreasing them, but if the error is not vanishing then we must consider decreasing
 # 		pwm_bl = min(pwm_bl, 0)
@@ -82,7 +82,7 @@ def straightLine_pid_imu():
 	
 	elif(err_y < -err_y_thresh):
 		pwm_fl += correction_y
-# 		pwm_br += correction_y
+# 		pwm_br -= correction_y
 		pwm_fl = min(pwm_fl, MAXpwm_fl)
 # 		pwm_fl = max(pwm_fl, 100)
 # 		pwm_br = min(pwm_br, 0)
@@ -91,14 +91,14 @@ def straightLine_pid_imu():
 	elif(abs(err_a) > err_a_thresh):  #what if, auv is facing straight but moving left or right or diagnonally. 
 		if(err_a>0): # auv is moving towards right
 			pwm_fr += correction_a # increase the force of front right and back left
-			pwm_bl -= correction_a # and yes here we need to change both or all 4, so that no turning force is created
+			pwm_bl += correction_a # and yes here we need to change both or all 4, so that no turning force is created
 			pwm_fr = min(pwm_fr, MAXpwm_fr)
 # 			pwm_fr = max(pwm_fr, 100)
 # 			pwm_bl = min(pwm_bl, 0)
 			pwm_bl = max(pwm_bl, MINpwm_bl) # if we are using 100 as base then this is wrong
 		else:
 			pwm_fl += correction_a
-			pwm_br -= correction_a
+			pwm_br += correction_a
 			pwm_fl = min(pwm_fl, MAXpwm_fl)
 # 			pwm_fl = max(pwm_fl, 100) 
 # 			pwm_br = min(pwm_br, 0)
