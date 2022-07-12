@@ -34,7 +34,7 @@ pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 0, 0, 0, 0, 100 , 100  # ======
 # x-axis ^ 
 # y-axis >
 
-def straightLine_pid_imu():
+def depth_pid_pressure():
 	global prev_err_d, int_err_d
 	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
 # 	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0  # ================== 100 basically represent base velocities
@@ -88,6 +88,7 @@ def callback_gui(config, level):
 def depth_callback(msg):
 	global depth
 	depth = msg.data
+	depth_pid_pressure()
 
 if __name__ == "__main__":
 	
