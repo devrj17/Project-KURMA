@@ -21,6 +21,7 @@ from std_msgs.msg import String
 yaw = 0
 acc_y = 0
 prev_err_y, int_err_y, prev_err_a, int_err_a = 0,0,0,0
+
 KP_y, KD_y, KI_y = 1,1,1
 KP_a, KD_a, KI_a = 1,1,1
 err_y_thresh = 10 #degrees
@@ -41,7 +42,7 @@ MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = -400, -400, -
 def straightLine_pid_imu():
 	global prev_err_y, int_err_y, prev_err_a, int_err_a
 # 	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
-	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, -100, 100, -100, 0 , 0  # ================== 100 basically represent base velocities
+	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0  # ================== 100 basically represent base velocities
 	
 	err_y = yaw
 	diff_err_y = err_y - prev_err_y
@@ -97,12 +98,19 @@ def straightLine_pid_imu():
 # 			pwm_br = min(pwm_br, 0)
 			pwm_br = max(pwm_br, MINpwm_br) # if we are using 100 as base then this is wrong
 	
-	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = int(pwm_fr), int(pwm_br), int(pwm_fl), int(pwm_bl), int(pwm_mr), int(pwm_ml),
+
+
+	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = int(pwm_fr), int(pwm_br), int(pwm_fl), int(pwm_bl), int(pwm_mr), int(pwm_ml)
 			
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '
+	rospy.loginfo(pwm_msg)
+
+	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1500 - 1*int(pwm_fr), 1500 +int(pwm_br),1500 + int(pwm_fl), 1500 +int(pwm_bl), 1500 + int(pwm_mr), 1500 - 1*int(pwm_ml)
+
+	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '		
 	pub.publish(pwm_msg)
 	rospy.loginfo(yaw)
-	rospy.loginfo(pwm_msg)
+	
 
 # 	return err_y, correction_y, err_a, correction_a
 
@@ -138,6 +146,6 @@ if __name__ == "__main__":
     rospy.Subscriber("accy", Float64, accy_callback)
 	
     pub=rospy.Publisher("PWM_VALUE",String ,queue_size=q)
-	srv = Server(PID_yawConfig, callback_gui)
+    srv = Server(PID_yawConfig, callback_gui)
    
     rospy.spin()
