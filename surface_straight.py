@@ -125,7 +125,7 @@ def yaw_callback(msg):
 def callback_gui(config, level):
     rospy.loginfo("""Reconfigure Request: {KP_yaw}, {KI_yaw}, {KD_yaw}""".format(**config))
     global KP_y, KI_y, KD_y
-    KP_y, KI_y, KD_y = config.KP_yaw / 1000, config.KI_yaw / 1000, config.KD_yaw / 1000 
+    KP_y, KI_y, KD_y = config.KP_yaw / 100, config.KI_yaw / 100, config.KD_yaw / 100 
     return config
 
 if __name__ == "__main__":
