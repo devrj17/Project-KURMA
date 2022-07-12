@@ -99,6 +99,28 @@ void message7(const std_msgs::String& msg)
   
 }
 
+void message_middle(const std_msgs::String& msg)
+{
+  //Serial.print("Inside Message Middle ");
+  //Serial.print(int(msg.data));
+  pwm_value= msg.data;
+
+  pwm_mr= (pwm_value.substring(0,4)).toInt();
+  pwm_ml= (pwm_value.substring(5,9)).toInt();  
+}
+
+void message_car(const std_msgs::String& msg)
+{
+  //Serial.print("Inside Message Car ");
+  //Serial.print(int(msg.data));
+  pwm_value= msg.data;
+
+  pwm_fr= (pwm_value.substring(0,4)).toInt();
+  pwm_fl= (pwm_value.substring(5,9)).toInt();  
+  pwm_br= (pwm_value.substring(10,14)).toInt();
+  pwm_bl= (pwm_value.substring(15,19)).toInt();  
+}
+
 
 ros::Publisher pub_accx("accx", &accx_msg);
 ros::Publisher pub_accy("accy", &accy_msg);
@@ -123,6 +145,8 @@ ros::Publisher pub_con_l("con_l", &confidence_l_msg);
 ros::Publisher pub("Verify", &pub_msg);
 ros::Publisher pub_depth("Depth", &depth_msg);
 ros::Subscriber<std_msgs::String> sub("PWM_VALUE", &message7);
+ros::Subscriber<std_msgs::String> sub_only_depth("PWM_VALUE_Middle", &message_middle);
+ros::Subscriber<std_msgs::String> sub_only_car("PWM_VALUE_car", &message_car);
 
 void setup()
 {
@@ -130,6 +154,8 @@ void setup()
   
   nh.initNode();
   nh.subscribe(sub);
+  nh.subscribe(sub_only_depth);
+  nh.subscribe(sub_only_car);
   nh.advertise(pub);
   nh.advertise(pub_depth);
   
