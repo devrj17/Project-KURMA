@@ -36,6 +36,7 @@ distance_r = 0
 distance_l = 0
 confidence_r = 0
 confidence_l = 0
+depth = 0
 
 
 def accy_callback(msg):
@@ -109,6 +110,10 @@ def con_r_callback(msg):
 def con_l_callback(msg):
 	global confidence_l
 	confidence_l = msg.data
+	
+def depth_callback(msg):
+	global depth
+	depth = msg.data
 
 
 
@@ -135,6 +140,8 @@ def animate(i):
     rospy.Subscriber("dist_l", Float64, dist_l_callback)
     rospy.Subscriber("con_r", Float64, con_r_callback)
     rospy.Subscriber("con_l", Float64, con_l_callback)
+	
+	rospy.Subscriber("Depth", Float32, depth_callback)
 
 
     # Add x and y to lists
