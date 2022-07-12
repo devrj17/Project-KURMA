@@ -32,7 +32,7 @@ MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = -400, -400, -
 # MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 1900, 1900, 1900, 1900, 1900, 1900 # This could be done by a single variable
 # MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = 1100, 1100, 1100, 1100, 1100, 1100
 # # pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1600, 1400, 1600, 1400, 1500, 1500 # ========== base velocities
-# pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, -100, 100, -100, 0 , 0  # ================== 100 basically represent base velocities
+pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0  # ================== 100 basically represent base velocities
 
 # x-axis ^ 
 # y-axis >
@@ -41,8 +41,8 @@ MINpwm_fr, MINpwm_fl, MINpwm_br, MINpwm_bl, MINpwm_mr, MINpwm_ml = -400, -400, -
 
 def straightLine_pid_imu():
 	global prev_err_y, int_err_y, prev_err_a, int_err_a
-# 	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
-	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0  # ================== 100 basically represent base velocities
+	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
+# 	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0  # ================== 100 basically represent base velocities
 	
 	err_y = yaw
 	diff_err_y = err_y - prev_err_y
@@ -65,6 +65,9 @@ def straightLine_pid_imu():
 	else:
 	 	correction_a =correction_a - KI_a*int_err_a 
 	correction_a = max(correction_a,0)
+	
+	if(abs(err_y) > err_y_thresh):
+		pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0
 
 	if(err_y > err_y_thresh):
 		pwm_fr += correction_y # increasing the force of front right
