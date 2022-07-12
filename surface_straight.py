@@ -17,14 +17,15 @@ from std_msgs.msg import String
 # R  C  A  A  C
 # D  -  -  -  -  C  C
 # U  -  -  -  -  A  A
-
+pwmBase = 1470
+yaw_initial=0
 yaw = 0
 acc_y = 0
 prev_err_y, int_err_y, prev_err_a, int_err_a = 0,0,0,0
 
 KP_y, KD_y, KI_y = 1,1,1
 KP_a, KD_a, KI_a = 1,1,1
-err_y_thresh = 10 #degrees
+err_y_thresh = 4 #degrees
 err_a_thresh = 0
 turning_factor = 0
 MAXpwm_fr, MAXpwm_fl, MAXpwm_br, MAXpwm_bl, MAXpwm_mr, MAXpwm_ml = 400, 400, 400, 400, 400, 400 # This could be done by a single variable
@@ -44,7 +45,7 @@ def straightLine_pid_imu():
 	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
 # 	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0  # ================== 100 basically represent base velocities
 	
-	err_y = yaw
+	err_y = yaw-yaw_initial
 	diff_err_y = err_y - prev_err_y
 	int_err_y += err_y 
 	prev_err_y = err_y
@@ -110,8 +111,7 @@ def straightLine_pid_imu():
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '
 	rospy.loginfo(pwm_msg)
 
-	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 1500 - 1*int(pwm_fr), 1500 +int(pwm_br),1500 + int(pwm_fl), 1500 +int(pwm_bl), 1500 + int(pwm_mr), 1500 - 1*int(pwm_ml)
-
+	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = pwmBase - 1*int(pwm_fr), pwmBase +int(pwm_br),pwmBase + int(pwm_fl), pwmBase +int(pwm_bl), pwmBase + int(pwm_mr), pwmBase - 1*int(pwm_ml)
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_mr) + ' ' + str(pwm_ml) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '		
 	pub.publish(pwm_msg)
 	rospy.loginfo(yaw)
@@ -131,8 +131,11 @@ def accx_callback(msg):
 	acc_x = msg.data
 
 def yaw_callback(msg):
-	global yaw
+	global yaw, yaw_initial
 	yaw = msg.data
+	if(yaw_initial==0):
+		yaw_initial=yaw
+	
 	straightLine_pid_imu()
 	
 def callback_gui(config, level):
