@@ -47,6 +47,7 @@ def straightLine_pid_imu():
 	err_y = yaw
 	diff_err_y = err_y - prev_err_y
 	int_err_y += err_y 
+	prev_err_y = err_y
 	
 	correction_y = KP_y*abs(err_y) + KD_y*diff_err_y
 	if(int_err_y*err_y > 0) :
@@ -58,6 +59,7 @@ def straightLine_pid_imu():
 	err_a = acc_y
 	diff_err_a = err_a - prev_err_a
 	int_err_a += err_a 
+	prev_err_a = err_a
 	
 	correction_a = KP_a*abs(err_a) + KD_a*diff_err_a
 	if(int_err_a*err_a > 0) :
