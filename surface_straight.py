@@ -18,7 +18,7 @@ from std_msgs.msg import String
 # D  -  -  -  -  C  C
 # U  -  -  -  -  A  A
 pwmBase = 1470
-yaw_initial=0
+yaw_desired, cnt = 0, 0
 yaw = 0
 acc_y = 0
 prev_err_y, int_err_y, prev_err_a, int_err_a = 0,0,0,0
@@ -45,7 +45,7 @@ def straightLine_pid_imu():
 	global pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml
 # 	pwm_fr, pwm_br, pwm_fl, pwm_bl, pwm_mr, pwm_ml = 100, 100, 100, 100, 0 , 0  # ================== 100 basically represent base velocities
 	
-	err_y = yaw-yaw_initial
+	err_y = yaw-yaw_desired
 	diff_err_y = err_y - prev_err_y
 	int_err_y += err_y 
 	prev_err_y = err_y
@@ -133,8 +133,9 @@ def accx_callback(msg):
 def yaw_callback(msg):
 	global yaw, yaw_initial
 	yaw = msg.data
-	if(yaw_initial==0):
-		yaw_initial=yaw
+	if(cnt==0):
+		yaw_desired=yaw
+		cnt = 1
 	
 	straightLine_pid_imu()
 	
