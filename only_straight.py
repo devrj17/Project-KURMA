@@ -92,7 +92,7 @@ def straightLine_pid_imu():
 			pwm_fl += correction_a
 			pwm_br += correction_a
 			pwm_fl = min(pwm_fl, MAXpwm)
-            pwm_br = min(pwm_br, MAXpwm)
+			pwm_br = min(pwm_br, MAXpwm)
 
 	pwm_fr, pwm_br, pwm_fl, pwm_bl = pwmBase - 1*int(pwm_fr), pwmBase +int(pwm_br),pwmBase + int(pwm_fl), pwmBase +int(pwm_bl)
 	pwm_msg = str(pwm_fr) + ' ' + str(pwm_fl) + ' ' + str(pwm_br) + ' ' + str(pwm_bl) + ' '		
@@ -114,7 +114,7 @@ def accx_callback(msg):
 	acc_x = msg.data
 
 def yaw_callback(msg):
-	global yaw, yaw_initial
+	global yaw, yaw_desired, cnt
 	yaw = msg.data
 	if(cnt==0):
 		yaw_desired=yaw
