@@ -95,14 +95,14 @@ def straightLine_pid_imu():
 			pwm_fr = min(pwm_fr, MAXpwm_fr)
 # 			pwm_fr = max(pwm_fr, 100)
 # 			pwm_bl = min(pwm_bl, 0)
-			pwm_bl = max(pwm_bl, MINpwm_bl) # if we are using 100 as base then this is wrong
+			pwm_bl = min(pwm_bl, MAXpwm_bl) # if we are using 100 as base then this is wrong
 		else:
 			pwm_fl += correction_a
 			pwm_br += correction_a
 			pwm_fl = min(pwm_fl, MAXpwm_fl)
 # 			pwm_fl = max(pwm_fl, 100) 
 # 			pwm_br = min(pwm_br, 0)
-			pwm_br = max(pwm_br, MINpwm_br) # if we are using 100 as base then this is wrong
+			pwm_br = min(pwm_br, MAXpwm_br) # if we are using 100 as base then this is wrong
 	
 
 
