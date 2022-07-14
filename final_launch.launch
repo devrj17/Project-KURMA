@@ -1,6 +1,6 @@
 <launch>
-	<node pkg="auv_codes2" name="only_depth" type="only_depth.py" output="screen" />
-	<node pkg="auv_codes2" name="only_straight" type="only_straight.py" output="screen" />
+	<node pkg="auv_codes2" name="only_depth_pid" type="only_depth.py" output="screen" />
+	<node pkg="auv_codes2" name="only_straight_pid" type="only_straight.py" output="screen" />
 	<node pkg="auv_codes2" name="gui" type="gui.py" output="screen" />
 
 
