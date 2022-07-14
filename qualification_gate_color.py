@@ -1,125 +1,48 @@
 #! /usr/bin/env python
 
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import rospy
 import cv2
 import numpy as np
 from matplotlib import pyplot as plt
+from auv_codes2.msg import distance_and_center
 
-# reading image
-frame = cv2.imread('Frame665.jpg')
-cv2.imshow('image', frame)
+img
 
-b, g, r = cv2.split(frame)
-# b=b-163 # ye yaha pe value change ki thi blue ki
+def image_processing(img):
 
-# r=r+142
-# clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-# equc_b= clahe.apply(b)
-# equc_g = clahe.apply(g)
-# equc_r = clahe.apply(r)
-# equc = cv2.merge((equc_b, equc_g, equc_r))
+	detected = 0 # both the flares not detected
 
-def nothing(x):
-	pass
+	if(detected == 1):
 
-cv2.namedWindow('track_', cv2.WINDOW_NORMAL)
-# cv2.namedWindow('track_',cv2.WINDOW_NORMAL)
+		msg_dist = distance_and_center()
+		msg_distance.centerx = 0
+		msg_distance.centery = 0
 
-cv2.createTrackbar('bt','track_',0,255, nothing)
-cv2.createTrackbar('gt','track_',0,255, nothing)
-cv2.createTrackbar('rt','track_',0,255, nothing)
+	pub_dist.publish(msg_dist)
 
-cv2.createTrackbar('lh','track_',0,180,nothing)
-cv2.createTrackbar('uh','track_',0,180,nothing)
-cv2.createTrackbar('ls','track_',0,255,nothing)
-cv2.createTrackbar('us','track_',0,255,nothing)
-cv2.createTrackbar('lv','track_',0,255,nothing)
-cv2.createTrackbar('uv','track_',0,255,nothing)
+def callback_img(msgs):
 
-while (1):
+    # ============== reading the image from camera_input topic =================
+	global img
+    bridge = CvBridge()
+    img = bridge.imgmsg_to_cv2(msgs, desired_encoding="passthrough")
+	
+	image_processing(img)
 
-    frame = cv2.imread('Frame665.jpg')
-
-    bt = cv2.getTrackbarPos('bt', 'track_')
-    gt = cv2.getTrackbarPos('gt', 'track_')
-    rt = cv2.getTrackbarPos('rt', 'track_')
-
-    lh = cv2.getTrackbarPos('lh', 'track_')
-    uh = cv2.getTrackbarPos('uh', 'track_')
-    ls = cv2.getTrackbarPos('ls', 'track_')
-    us = cv2.getTrackbarPos('us', 'track_')
-    lv = cv2.getTrackbarPos('lv', 'track_')
-    uv = cv2.getTrackbarPos('uv', 'track_')
-
-
-    #for this pic
-    # bt=24
-    # gt=43
-    # rt=222
-    b_ = b - bt
-    g_ = g - gt
-    r_ = r + rt
-
-    merg = cv2.merge((b_,g_,r_))
-    cv2.imshow('after merge', merg)
-
-    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    equc_b = clahe.apply(b_)
-    equc_g = clahe.apply(g_)
-    equc_r = clahe.apply(r_)
-    # equc = cv2.merge((equc_b, equc_g, equc_r))
-    equc = cv2.merge((equc_b, equc_g, r_))
-    # frame=equc
-    kernel = np.ones((3, 3), np.uint8)
-
-    cv2.imshow('after clahe', frame)
-
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-    #for blue
-    # lower_blue = np.array([lh, ls, lv])
-
-    # upper_blue = np.array([uh, us, uv])
-
-    lower=np.array([lh,ls,lv])
-    upper=np.array([uh,us,uv])
-
-    mask = cv2.inRange(hsv, lower, upper)
-    cv2.imshow('original mask', mask)
-    mask = cv2.dilate(mask, kernel, iterations=6)
-    cv2.imshow('dilated mask', mask)
-    # mask = cv2.GaussianBlur(mask, (5, 5), 100)
-    # cv2.imshow('blurred mask', mask)
+ if __name__ == "__main__":
+	
+    rospy.init_node("qualification_color_node", anonymous = False)
+    q = 1
     
-    contours, hierarchy = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    rospy.Subscriber("Depth", Float32, depth_callback)
+    rospy.Subscriber("angle_x", Float64, roll_callback)
+	rospy.Subscriber('camera_input', Image, callback_img) 
+	
+    pub=rospy.Publisher("PWM_VALUE_Middle",String ,queue_size=q)
+	pub_dist = rospy.Publisher('gate_pos',distance_and_center,queue_size=10)
     
-    if len(contours) > 0:
-    
-        areas = [cv2.contourArea(c) for c in contours]
-        max_index = np.argmax(areas)
-        cnt = contours[max_index]
-    
-        cv2.drawContours(frame, [cnt], 0, (0,255,0), 3)
-    
-    # approx the contour a little
-    # epsilon = 0.0005 * cv2.arcLength(cnt, True)
-    # approx = cv2.approxPolyDP(cnt, epsilon, True)
-    
-    
-    
-    res = cv2.bitwise_and(frame, frame, mask=mask)
-    
-    # (x, y), radius = cv2.minEnclosingCircle(cnt)
-    # center = (int(x), int(y))
-    # radius = int(radius)
-    # cv2.circle(frame, center, radius, (0, 255, 0), 2)
-
-    # cv2.imshow('frame', frame)
-    cv2.imshow('res', res)
-
-    k = cv2.waitKey(5) & 0xFF
-
-    if k == 27:
-        break
-
-cv2.destroyAllWindows()
-
-# cap.release()
+	# srv = Server(PID_yawConfig, callback_gui)
+   
+    rospy.spin()
