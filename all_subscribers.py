@@ -7,6 +7,8 @@ from std_msgs.msg import Int32MultiArray
 from std_msgs.msg import Int32
 from std_msgs.msg import Float64
 from std_msgs.msg import String
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
 
 import datetime as dt
 import matplotlib.pyplot as plt
@@ -115,7 +117,12 @@ def depth_callback(msg):
 	global depth
 	depth = msg.data
 
+def callback_img(msgs):
 
+    # ============== reading the image from camera_input topic =================
+	global img
+    bridge = CvBridge()
+    img = bridge.imgmsg_to_cv2(msgs, desired_encoding="passthrough")
 
 # This function is called periodically from FuncAnimation
 def animate(i):
@@ -142,7 +149,8 @@ def animate(i):
     rospy.Subscriber("con_l", Float64, con_l_callback)
 	
 	rospy.Subscriber("Depth", Float32, depth_callback)
-
+	
+	rospy.Subscriber('camera_input', Image, callback_img)  # do not forget the lines 10 and 11
 
     # Add x and y to lists
     xs.append(dt.datetime.now().strftime('%H:%M:%S.%f'))
